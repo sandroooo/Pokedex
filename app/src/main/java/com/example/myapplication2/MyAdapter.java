@@ -1,11 +1,13 @@
 package com.example.myapplication2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -15,9 +17,10 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
-
+    List<Pokemon> pokemonList;
+    Context context;
     private List<Pokemon> values;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -27,7 +30,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView txtHeader;
         public TextView txtFooter;
         public ImageView imgView;
+        public RelativeLayout relative;
         public View layout;
+
 
         public ViewHolder(View v) {
             super(v);
@@ -35,6 +40,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             txtHeader = (TextView) v.findViewById(R.id.firstLine);
             txtFooter = (TextView) v.findViewById(R.id.secondLine);
             imgView = (ImageView) v.findViewById(R.id.icon);
+            relative = (RelativeLayout) v.findViewById(R.id.relative);
         }
     }
 
@@ -49,7 +55,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Pokemon> myDataset) {
+    public MyAdapter(List<Pokemon> myDataset,Context context) {
+        this.context=context;
         values = myDataset;
     }
 
@@ -83,6 +90,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         Picasso.get().load("https://pokeres.bastionbot.org/images/pokemon/"+(position+1)+".png").resize(90, 90).into(holder.imgView);
         holder.txtFooter.setText((position+1) +" |  "+currentPokemon.getUrl());
+
+        holder.relative.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,PokeDetails.class);
+                intent.putExtra("nom",currentPokemon.getName());
+                intent.putExtra("url",currentPokemon.getUrl());
+                intent.putExtra("position",position);
+
+                context.startActivity(intent);
+
+            }
+        });
     }
 
 

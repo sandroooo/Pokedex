@@ -1,11 +1,15 @@
 package com.example.myapplication2;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -72,14 +76,14 @@ public class MainActivity extends Activity {
 
     }
 
-    private void ShowList(List<Pokemon> pokemonList) {
+    private void ShowList(final List<Pokemon> pokemonList) {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
 
-        mAdapter = new MyAdapter(pokemonList);
+        mAdapter = new MyAdapter(pokemonList,this);
         recyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
@@ -95,6 +99,7 @@ public class MainActivity extends Activity {
                         input.remove(viewHolder.getAdapterPosition());
                         mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                     }
+
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
