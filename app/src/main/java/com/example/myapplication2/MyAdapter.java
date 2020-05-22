@@ -2,6 +2,7 @@ package com.example.myapplication2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,7 +81,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final Pokemon currentPokemon = values.get(position);
+        final  Pokemon currentPokemon = values.get(position);
         holder.txtHeader.setText(currentPokemon.getName());
         holder.txtHeader.setOnClickListener(new OnClickListener() {
             @Override
@@ -99,10 +101,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 intent.putExtra("url",currentPokemon.getUrl());
                 intent.putExtra("position",position);
 
+
+                intent.putExtra("current",currentPokemon);
+
+                //intent.putExtra("current", (Serializable) currentPokemon);
                 context.startActivity(intent);
+
 
             }
         });
+
     }
 
 
@@ -111,6 +119,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public int getItemCount() {
         return values.size();
     }
+
 
 }
 

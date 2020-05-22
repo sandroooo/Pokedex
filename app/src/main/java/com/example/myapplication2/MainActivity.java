@@ -10,12 +10,14 @@ import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +39,24 @@ public class MainActivity extends Activity {
     private static final String BASE_URL = "https://pokeapi.co/";
     private SharedPreferences sharedPreferences;
     private Gson gson ;
+    Button button2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        button2 = findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+
+                Toast.makeText(getApplicationContext(), "add to equipe", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, list_equipe.class);
+                startActivity(intent);
+            }
+        });
 
         sharedPreferences = getSharedPreferences("application_esiea", Context.MODE_PRIVATE);
 
@@ -93,11 +107,12 @@ public class MainActivity extends Activity {
                             target) {
                         return false;
                     }
-                    @Override
+                   @Override
 
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                         input.remove(viewHolder.getAdapterPosition());
-                        mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                       // mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                       mAdapter.notifyDataSetChanged();
                     }
 
                 };
