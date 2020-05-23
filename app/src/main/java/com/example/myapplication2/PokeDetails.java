@@ -29,14 +29,12 @@ public class PokeDetails extends AppCompatActivity {
     TextView nom,url;
     String mNom,mUrl;
     Button plus, like;
-    int pos;
+    String img;
     private List<Pokemon> listEquipe = new ArrayList<>();
     Pokemon current;
     Intent intent = new Intent(this,list_equipe.class);
     private SharedPreferences sharedPreferences;
     private Gson gson ;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +54,10 @@ public class PokeDetails extends AppCompatActivity {
         url=findViewById(R.id.url);
         mNom=getIntent().getStringExtra("nom");
         mUrl=getIntent().getStringExtra("url");
-        pos =getIntent().getIntExtra("position",0);
+        img =getIntent().getStringExtra("img");
         nom.setText(mNom);
         url.setText(mUrl);
-        Picasso.get().load("https://pokeres.bastionbot.org/images/pokemon/"+(pos+1)+".png").resize(100, 100).into(imageView);
+        Picasso.get().load(img).resize(100, 100).into(imageView);
         current=(Pokemon) getIntent().getSerializableExtra("current");
         plus = findViewById(R.id.plus);
         like = findViewById(R.id.jaime);
@@ -67,23 +65,21 @@ public class PokeDetails extends AppCompatActivity {
             public void onClick(View view) {
                 if(listEquipe.size()>=6)
                 {
-                    Toast.makeText(getApplicationContext(), "Vous avez deja 6 Pokemon dans votre équipe - Rendez vous dans > équipe pour Gérer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Vous avez deja 6 Pokemon dans votre équipe", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     listEquipe.add(current);
                     saveList(listEquipe);
+                    Toast.makeText(getApplicationContext(), "Add to Equipe", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(getApplicationContext(), "add to equipe", Toast.LENGTH_SHORT).show();
             }
         });
 
         like.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "like", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Like", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void saveList(List<Pokemon> pokemonList) {

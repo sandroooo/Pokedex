@@ -1,27 +1,19 @@
 package com.example.myapplication2;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
@@ -35,19 +27,15 @@ public class MainActivity extends Activity {
     private RecyclerView recyclerView;
     private MyAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    List<String> input = new ArrayList<>();
     private static final String BASE_URL = "https://pokeapi.co/";
     private SharedPreferences sharedPreferences;
     private Gson gson ;
     Button button2;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         button2 = findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
@@ -63,7 +51,6 @@ public class MainActivity extends Activity {
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
-
         List<Pokemon>pokemonList =getDataFromCache();
 
         if(pokemonList!= null)
@@ -72,7 +59,6 @@ public class MainActivity extends Activity {
         }else{
             MakeApiCall();
         }
-
     }
 
     private List<Pokemon> getDataFromCache() {
@@ -87,7 +73,6 @@ public class MainActivity extends Activity {
            Type listType = new TypeToken<List<Pokemon>>(){}.getType();
            return gson.fromJson(jsonPokemon,listType);
        }
-
     }
 
     private void ShowList(final List<Pokemon> pokemonList) {
@@ -99,36 +84,14 @@ public class MainActivity extends Activity {
 
         mAdapter = new MyAdapter(pokemonList,this);
         recyclerView.setAdapter(mAdapter);
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder
-                            target) {
-                        return false;
-                    }
-                   @Override
-
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                        input.remove(viewHolder.getAdapterPosition());
-                       // mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                       mAdapter.notifyDataSetChanged();
-                    }
-
-                };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-
     private void MakeApiCall(){
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
         PokeApi pokeApi = retrofit.create(PokeApi.class);
 
         Log.d("SAND","BEFORE CALLBACK");

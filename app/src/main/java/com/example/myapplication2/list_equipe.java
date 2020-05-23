@@ -1,5 +1,6 @@
 package com.example.myapplication2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,18 +23,18 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class list_equipe extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private MyAdapter mAdapter;
+    private MyAdapterEquipe mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     List<String> input = new ArrayList<>();
     private static final String BASE_URL = "https://pokeapi.co/";
     private SharedPreferences sharedPreferences;
     private Gson gson ;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,7 @@ public class list_equipe extends AppCompatActivity {
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
-
         List<Pokemon>pokemonList = getDataFromCache();
-
-
 
         if(pokemonList!= null)
         {
@@ -56,7 +54,6 @@ public class list_equipe extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(),"Empty",Toast.LENGTH_SHORT).show();
         }
-
     }
     private List<Pokemon> getDataFromCache() {
 
@@ -70,7 +67,6 @@ public class list_equipe extends AppCompatActivity {
             Type listType = new TypeToken<List<Pokemon>>(){}.getType();
             return gson.fromJson(jsonPokemon,listType);
         }
-
     }
 
     private void ShowList(final List<Pokemon> pokemonList) {
@@ -79,27 +75,35 @@ public class list_equipe extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-
-        mAdapter = new MyAdapter(pokemonList,this);
+        mAdapter = new MyAdapterEquipe(pokemonList,this);
         recyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder
-                            target) {
-                        return false;
-                    }
-                    @Override
+        ItemTouchHelper.Callback ItemToucherHelperCallback = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.START |ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags,swipeFlags );
+            }
 
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                        input.remove(viewHolder.getAdapterPosition());
-                        //mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                        mAdapter.notifyDataSetChanged();
-                    }
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                Collections.swap(mAdapter.values,viewHolder.getAdapterPosition(),target.getAdapterPosition());
+                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+                saveList(mAdapter.values);
+                return true;
+            }
 
-                };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                mAdapter.values.remove(position);
+                mAdapter.notifyItemRemoved(position);
+                saveList(mAdapter.values);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(ItemToucherHelperCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
@@ -108,14 +112,13 @@ public class list_equipe extends AppCompatActivity {
         String jsonString = gson.toJson(pokemonList);
         sharedPreferences
                 .edit()
-                .putString("jsonPokemonList",jsonString)
+                .putString("jsonListEquipe",jsonString)
                 .apply();
         Toast.makeText(getApplicationContext(),"List saved",Toast.LENGTH_SHORT).show();
     }
 
     private void showError() {
         Toast.makeText(getApplicationContext(), "API Error", Toast.LENGTH_SHORT).show();
-
 
     }
 

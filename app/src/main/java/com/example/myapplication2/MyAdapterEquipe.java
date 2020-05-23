@@ -2,9 +2,9 @@ package com.example.myapplication2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,10 +13,10 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MyAdapterEquipe extends RecyclerView.Adapter<MyAdapterEquipe.ViewHolder> {
     List<Pokemon> pokemonList;
     Context context;
-    private List<Pokemon> values;
+    List<Pokemon> values;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -28,7 +28,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public ImageView imgView;
         public RelativeLayout relative;
         public View layout;
-
 
         public ViewHolder(View v) {
             super(v);
@@ -51,14 +50,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Pokemon> myDataset,Context context) {
+    public MyAdapterEquipe(List<Pokemon> myDataset,Context context) {
         this.context=context;
         values = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public MyAdapterEquipe.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         LayoutInflater inflater = LayoutInflater.from(
@@ -77,11 +76,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - replace the contents of the view with that element
         final  Pokemon currentPokemon = values.get(position);
         holder.txtHeader.setText(currentPokemon.getName());
-        currentPokemon.setImg("https://pokeres.bastionbot.org/images/pokemon/"+(position+1)+".png");
+        holder.txtHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove(position);
+            }
+        });
         Picasso.get().load(currentPokemon.getImg()).resize(90, 90).into(holder.imgView);
         holder.txtFooter.setText((position+1) +" |  "+currentPokemon.getUrl());
 
-        holder.relative.setOnClickListener(new OnClickListener() {
+        holder.relative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,PokeDetails.class);
@@ -92,7 +96,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 context.startActivity(intent);
             }
         });
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
