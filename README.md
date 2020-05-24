@@ -1,3 +1,4 @@
 # Pokedex
 
-![](sandroooo/Pokedex/blob/master/app/src/main/res/drawable/pokedex.jpg)
+![]()
+![Image description](Pokedex/app/src/main/res/drawable/pokedex.jpg)
