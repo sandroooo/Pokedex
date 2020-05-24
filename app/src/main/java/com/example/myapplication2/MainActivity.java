@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
         button2.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
 
-                Toast.makeText(getApplicationContext(), "add to equipe", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Add to equipe", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, list_equipe.class);
                 startActivity(intent);
             }

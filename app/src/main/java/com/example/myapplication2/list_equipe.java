@@ -39,7 +39,7 @@ public class list_equipe extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_list_equipe);
 
         sharedPreferences = getSharedPreferences("application_esiea2", Context.MODE_PRIVATE);
 
